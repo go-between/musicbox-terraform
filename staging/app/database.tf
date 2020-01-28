@@ -1,5 +1,10 @@
+resource "aws_db_subnet_group" "staging" {
+  name       = "staging"
+  subnet_ids = aws_subnet.private-staging.*.id
+}
+
 resource "aws_db_instance" "musicbox-staging" {
-  depends_on             = [aws_security_group.ecs_tasks]
+  depends_on             = [aws_security_group.db-staging]
   identifier             = "musicbox-staging"
   allocated_storage      = 5
   engine                 = "postgres"
@@ -8,5 +13,6 @@ resource "aws_db_instance" "musicbox-staging" {
   name                   = "musicbox"
   username               = "read_write"
   password               = "PleaseReplaceMePlease!"
-  vpc_security_group_ids = [aws_security_group.ecs_tasks.id]
+  vpc_security_group_ids = [aws_security_group.db-staging.id]
+  db_subnet_group_name   = aws_db_subnet_group.staging.name
 }

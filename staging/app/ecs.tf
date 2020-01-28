@@ -1,8 +1,8 @@
-resource "aws_ecs_cluster" "main" {
-  name = "musicbox-cluster"
+resource "aws_ecs_cluster" "staging" {
+  name = "musicbox-cluster-staging"
 }
 
-data "template_file" "musicbox_app" {
+data "template_file" "musicbox-app" {
   template = file("./templates/ecs/app.json.tpl")
 
   vars = {
@@ -11,38 +11,38 @@ data "template_file" "musicbox_app" {
     fargate_cpu    = var.fargate_cpu
     fargate_memory = var.fargate_memory
     aws_region     = var.aws_region
-    allowed_host   = aws_alb.main.dns_name
+    allowed_host   = aws_alb.staging.dns_name
   }
 }
 
-resource "aws_ecs_task_definition" "app" {
+resource "aws_ecs_task_definition" "staging" {
   family                   = "musicbox-app-task-staging"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.fargate_cpu
   memory                   = var.fargate_memory
-  container_definitions    = data.template_file.musicbox_app.rendered
+  container_definitions    = data.template_file.musicbox-app.rendered
 }
 
-resource "aws_ecs_service" "main" {
+resource "aws_ecs_service" "staging" {
   name            = "musicbox-service-staging"
-  cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.app.arn
+  cluster         = aws_ecs_cluster.staging.id
+  task_definition = aws_ecs_task_definition.staging.arn
   desired_count   = var.app_count
   launch_type     = "FARGATE"
 
   network_configuration {
-    security_groups  = [aws_security_group.ecs_tasks.id]
-    subnets          = aws_subnet.private.*.id
+    security_groups  = [aws_security_group.ecs-tasks-staging.id]
+    subnets          = aws_subnet.private-staging.*.id
     assign_public_ip = true
   }
 
   load_balancer {
-    target_group_arn = aws_alb_target_group.app.id
+    target_group_arn = aws_alb_target_group.staging.id
     container_name   = "musicbox-app-staging"
     container_port   = var.app_port
   }
 
-  depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role]
+  depends_on = [aws_alb_listener.front-end-staging, aws_iam_role_policy_attachment.ecs_task_execution_role]
 }

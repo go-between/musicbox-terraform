@@ -1,4 +1,4 @@
-resource "aws_cloudwatch_log_group" "musicbox_log_group_staging" {
+resource "aws_cloudwatch_log_group" "musicbox-log-group-staging" {
   name              = "/ecs/musicbox-app-staging"
   retention_in_days = 30
 
@@ -7,7 +7,7 @@ resource "aws_cloudwatch_log_group" "musicbox_log_group_staging" {
   }
 }
 
-resource "aws_cloudwatch_log_stream" "musicbox_log_stream_staging" {
+resource "aws_cloudwatch_log_stream" "musicbox-log-stream-staging" {
   name           = "musicbox-log-stream-staging"
-  log_group_name = aws_cloudwatch_log_group.musicbox_log_group_staging.name
+  log_group_name = aws_cloudwatch_log_group.musicbox-log-group-staging.name
 }
