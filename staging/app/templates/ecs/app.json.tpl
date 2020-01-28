@@ -6,7 +6,8 @@
     "memory": ${fargate_memory},
     "networkMode": "awsvpc",
     "environment": [
-      { "name": "ALLOWED_HOST", "value": "${allowed_host}" }
+      { "name": "ALLOWED_HOST", "value": "${allowed_host}" },
+      { "name": "RAILS_ENV", "value": "staging" }
     ],
     "logConfiguration": {
         "logDriver": "awslogs",
