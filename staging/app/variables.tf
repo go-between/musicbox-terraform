@@ -1,3 +1,6 @@
+variable "db_root_password_staging" {}
+variable "secret_key_base_staging" {}
+
 variable "aws_region" {
   description = "The AWS region things are created in"
   default     = "us-east-1"
@@ -25,7 +28,7 @@ variable "app_image" {
 
 variable "app_port" {
   description = "Port exposed by the docker image to redirect traffic to"
-  default     = 3000
+  default     = 80
 }
 
 variable "app_count" {
@@ -34,7 +37,7 @@ variable "app_count" {
 }
 
 variable "health_check_path" {
-  default = "/"
+  default = "/health_check"
 }
 
 variable "fargate_cpu" {
