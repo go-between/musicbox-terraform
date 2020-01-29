@@ -10,7 +10,7 @@ resource "aws_db_instance" "musicbox-staging" {
   engine                 = "postgres"
   engine_version         = "11.5"
   instance_class         = "db.t2.micro"
-  name                   = "musicbox"
+  name                   = "postgres"
   username               = "root"
   password               = var.db_root_password_staging
   vpc_security_group_ids = [aws_security_group.db-staging.id]
