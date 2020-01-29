@@ -10,6 +10,7 @@
       { "name": "ALLOWED_HOST", "value": "${allowed_host}" },
       { "name": "DATABASE_URL", "value": "${database_url}" },
       { "name": "RAILS_ENV", "value": "staging" },
+      { "name": "REDIS_URL", "value": "${redis_url}" },
       { "name": "SECRET_KEY_BASE", "value": "${secret_key_base}" }
     ],
     "logConfiguration": {

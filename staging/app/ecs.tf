@@ -14,9 +14,10 @@ data "template_file" "musicbox-app" {
     allowed_host    = aws_alb.staging.dns_name
     database_url    = "postgresql://root:${var.db_root_password_staging}@${aws_db_instance.musicbox-staging.address}"
     secret_key_base = var.secret_key_base_staging
+    redis_url       = "redis://${aws_elasticache_cluster.musicbox-staging.cache_nodes.0.address}:6379"
   }
 
-  depends_on = [aws_db_instance.musicbox-staging]
+  depends_on = [aws_db_instance.musicbox-staging, aws_elasticache_cluster.musicbox-staging]
 }
 
 resource "aws_ecs_task_definition" "staging" {
