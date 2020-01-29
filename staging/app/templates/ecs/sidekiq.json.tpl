@@ -2,7 +2,7 @@
   {
     "name": "musicbox-app-staging",
     "image": "${app_image}",
-    "command": ["passenger", "start", "-p", "80"],
+    "command": ["bundle", "exec", "sidekiq"],
     "cpu": ${fargate_cpu},
     "memory": ${fargate_memory},
     "networkMode": "awsvpc",

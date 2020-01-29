@@ -57,3 +57,21 @@ resource "aws_security_group" "db-staging" {
     security_groups = [aws_security_group.ecs-tasks-staging.id]
   }
 }
+
+resource "aws_security_group" "redis-staging" {
+  name   = "musicbox-redis-security-group-staging"
+  vpc_id = aws_vpc.staging.id
+  ingress {
+    protocol        = "tcp"
+    from_port       = 6379
+    to_port         = 6379
+    security_groups = [aws_security_group.ecs-tasks-staging.id]
+  }
+
+  egress {
+    protocol        = "tcp"
+    from_port       = 6379
+    to_port         = 6379
+    security_groups = [aws_security_group.ecs-tasks-staging.id]
+  }
+}

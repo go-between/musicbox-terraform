@@ -36,6 +36,11 @@ variable "app_count" {
   default     = 1
 }
 
+variable "worker_count" {
+  description = "Number of docker containers to run"
+  default     = 1
+}
+
 variable "health_check_path" {
   default = "/health_check"
 }
