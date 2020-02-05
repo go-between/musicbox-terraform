@@ -7,7 +7,7 @@
     "memory": ${fargate_memory},
     "networkMode": "awsvpc",
     "environment": [
-      { "name": "ALLOWED_HOST", "value": "${allowed_host}" },
+      { "name": "ALLOWED_HOST", "value": "${allowed_hosts}" },
       { "name": "DATABASE_URL", "value": "${database_url}" },
       { "name": "RAILS_ENV", "value": "staging" },
       { "name": "SECRET_KEY_BASE", "value": "${secret_key_base}" }

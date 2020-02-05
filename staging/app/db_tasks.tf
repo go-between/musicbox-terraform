@@ -7,7 +7,7 @@ data "template_file" "musicbox-app-db-create" {
     fargate_cpu     = var.fargate_cpu
     fargate_memory  = var.fargate_memory
     aws_region      = var.aws_region
-    allowed_host    = aws_alb.staging.dns_name
+    allowed_hosts   = aws_alb.staging.dns_name
     database_url    = "postgresql://root:${var.db_root_password_staging}@${aws_db_instance.musicbox-staging.address}"
     secret_key_base = var.secret_key_base_staging
   }
@@ -34,7 +34,7 @@ data "template_file" "musicbox-app-db-migrate" {
     fargate_cpu     = var.fargate_cpu
     fargate_memory  = var.fargate_memory
     aws_region      = var.aws_region
-    allowed_host    = aws_alb.staging.dns_name
+    allowed_hosts   = aws_alb.staging.dns_name
     database_url    = "postgresql://root:${var.db_root_password_staging}@${aws_db_instance.musicbox-staging.address}"
     secret_key_base = var.secret_key_base_staging
   }
