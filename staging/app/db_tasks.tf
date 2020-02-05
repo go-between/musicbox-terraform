@@ -1,5 +1,5 @@
 data "template_file" "musicbox-app-db-create" {
-  template = file("./templates/ecs/db-create.json.tpl")
+  template = file("./templates/ecs/app.json.tpl")
 
   vars = {
     app_image       = var.app_image
@@ -7,9 +7,11 @@ data "template_file" "musicbox-app-db-create" {
     fargate_cpu     = var.fargate_cpu
     fargate_memory  = var.fargate_memory
     aws_region      = var.aws_region
-    allowed_hosts   = aws_alb.staging.dns_name
+    command         = jsonencode(["bin/rake", "db:create"])
+    allowed_hosts   = "^172\\\\.17\\\\.\\\\d{1,3}\\\\.\\\\d{1,3}$&^${aws_alb.staging.dns_name}$"
     database_url    = "postgresql://root:${var.db_root_password_staging}@${aws_db_instance.musicbox-staging.address}"
     secret_key_base = var.secret_key_base_staging
+    redis_url       = "redis://${aws_elasticache_cluster.musicbox-staging.cache_nodes.0.address}:6379"
   }
 
   depends_on = [aws_db_instance.musicbox-staging]
@@ -26,7 +28,7 @@ resource "aws_ecs_task_definition" "staging-db-create" {
 }
 
 data "template_file" "musicbox-app-db-migrate" {
-  template = file("./templates/ecs/db-migrate.json.tpl")
+  template = file("./templates/ecs/app.json.tpl")
 
   vars = {
     app_image       = var.app_image
@@ -34,9 +36,11 @@ data "template_file" "musicbox-app-db-migrate" {
     fargate_cpu     = var.fargate_cpu
     fargate_memory  = var.fargate_memory
     aws_region      = var.aws_region
-    allowed_hosts   = aws_alb.staging.dns_name
+    command         = jsonencode(["bin/rake", "db:migrate"])
+    allowed_hosts   = "^172\\\\.17\\\\.\\\\d{1,3}\\\\.\\\\d{1,3}$&^${aws_alb.staging.dns_name}$"
     database_url    = "postgresql://root:${var.db_root_password_staging}@${aws_db_instance.musicbox-staging.address}"
     secret_key_base = var.secret_key_base_staging
+    redis_url       = "redis://${aws_elasticache_cluster.musicbox-staging.cache_nodes.0.address}:6379"
   }
 
   depends_on = [aws_db_instance.musicbox-staging]
