@@ -2,12 +2,12 @@
   {
     "name": "musicbox-app-staging",
     "image": "${app_image}",
-    "command": ["passenger", "start", "-p", "80"],
+    "command": ${command},
     "cpu": ${fargate_cpu},
     "memory": ${fargate_memory},
     "networkMode": "awsvpc",
     "environment": [
-      { "name": "ALLOWED_HOST", "value": "${allowed_host}" },
+      { "name": "ALLOWED_HOSTS", "value": "${allowed_hosts}" },
       { "name": "DATABASE_URL", "value": "${database_url}" },
       { "name": "RAILS_ENV", "value": "staging" },
       { "name": "REDIS_URL", "value": "${redis_url}" },

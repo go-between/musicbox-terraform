@@ -11,7 +11,8 @@ data "template_file" "musicbox-app" {
     fargate_cpu     = var.fargate_cpu
     fargate_memory  = var.fargate_memory
     aws_region      = var.aws_region
-    allowed_host    = aws_alb.staging.dns_name
+    command         = jsonencode(["passenger", "start", "-p", "80"])
+    allowed_hosts   = "^172\\\\.17\\\\.\\\\d{1,3}\\\\.\\\\d{1,3}$&^${aws_alb.staging.dns_name}$"
     database_url    = "postgresql://root:${var.db_root_password_staging}@${aws_db_instance.musicbox-staging.address}"
     secret_key_base = var.secret_key_base_staging
     redis_url       = "redis://${aws_elasticache_cluster.musicbox-staging.cache_nodes.0.address}:6379"
@@ -40,7 +41,7 @@ resource "aws_ecs_service" "staging" {
   network_configuration {
     security_groups  = [aws_security_group.ecs-tasks-staging.id]
     subnets          = aws_subnet.private-staging.*.id
-    assign_public_ip = true
+    assign_public_ip = false
   }
 
   load_balancer {

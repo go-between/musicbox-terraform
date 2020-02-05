@@ -5,9 +5,6 @@ resource "aws_vpc" "staging" {
   cidr_block           = "172.17.0.0/16"
   enable_dns_hostnames = true
 }
-data "aws_vpc" "staging" {
-  default = true
-}
 
 # Create var.az_count private subnets, each in a different AZ
 resource "aws_subnet" "private-staging" {
