@@ -4,6 +4,7 @@ data "aws_availability_zones" "available" {
 resource "aws_vpc" "staging" {
   cidr_block           = "172.17.0.0/16"
   enable_dns_hostnames = true
+  enable_dns_support   = true
 }
 
 # Create var.az_count private subnets, each in a different AZ
@@ -45,7 +46,7 @@ resource "aws_eip" "gw-staging" {
 resource "aws_instance" "nat-gateway-staging" {
   count = var.az_count
 
-  ami               = "${var.nat_vpc_ami}"
+  ami               = var.nat_vpc_ami
   instance_type     = "t2.micro"
   availability_zone = data.aws_availability_zones.available.names[count.index]
   subnet_id         = element(aws_subnet.public-staging.*.id, count.index)
@@ -57,8 +58,8 @@ resource "aws_route_table" "private-staging" {
   vpc_id = aws_vpc.staging.id
 
   route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = element(aws_nat_gateway.gw-staging.*.id, count.index)
+    cidr_block  = "0.0.0.0/0"
+    instance_id = element(aws_instance.nat-gateway-staging.*.id, count.index)
   }
 }
 
@@ -67,4 +68,70 @@ resource "aws_route_table_association" "private-staging" {
   count          = var.az_count
   subnet_id      = element(aws_subnet.private-staging.*.id, count.index)
   route_table_id = element(aws_route_table.private-staging.*.id, count.index)
+}
+
+# VPC Endpoints for fetching images from ECR
+resource "aws_vpc_endpoint" "ecr-api" {
+  vpc_id             = aws_vpc.staging.id
+  service_name       = "com.amazonaws.${var.aws_region}.ecr.api"
+  vpc_endpoint_type  = "Interface"
+  security_group_ids = [aws_security_group.ecs-ecr-staging.id]
+  subnet_ids         = aws_subnet.private-staging.*.id
+}
+
+resource "aws_vpc_endpoint" "ecr-dkr" {
+  vpc_id              = aws_vpc.staging.id
+  service_name        = "com.amazonaws.${var.aws_region}.ecr.dkr"
+  vpc_endpoint_type   = "Interface"
+  security_group_ids  = [aws_security_group.ecs-ecr-staging.id]
+  subnet_ids          = aws_subnet.private-staging.*.id
+  private_dns_enabled = true
+}
+
+# VPC Endpoint for storing ECR layers in S3
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id          = aws_vpc.staging.id
+  service_name    = "com.amazonaws.${var.aws_region}.s3"
+  route_table_ids = aws_route_table.private-staging.*.id
+}
+
+# VPC Endpoint for contacting ECS
+resource "aws_vpc_endpoint" "ecs-agent" {
+  vpc_id             = aws_vpc.staging.id
+  service_name       = "com.amazonaws.${var.aws_region}.ecs-agent"
+  vpc_endpoint_type  = "Interface"
+  subnet_ids         = aws_subnet.private-staging.*.id
+  security_group_ids = [aws_security_group.ecs-ecr-staging.id]
+}
+resource "aws_vpc_endpoint" "ecs-telemetry" {
+  vpc_id             = aws_vpc.staging.id
+  service_name       = "com.amazonaws.${var.aws_region}.ecs-telemetry"
+  vpc_endpoint_type  = "Interface"
+  subnet_ids         = aws_subnet.private-staging.*.id
+  security_group_ids = [aws_security_group.ecs-ecr-staging.id]
+}
+resource "aws_vpc_endpoint" "ecs" {
+  vpc_id             = aws_vpc.staging.id
+  service_name       = "com.amazonaws.${var.aws_region}.ecs"
+  vpc_endpoint_type  = "Interface"
+  subnet_ids         = aws_subnet.private-staging.*.id
+  security_group_ids = [aws_security_group.ecs-ecr-staging.id]
+}
+
+# VPC Endpoint for cloudwatch monitoring
+resource "aws_vpc_endpoint" "monitoring" {
+  vpc_id             = aws_vpc.staging.id
+  service_name       = "com.amazonaws.${var.aws_region}.monitoring"
+  vpc_endpoint_type  = "Interface"
+  security_group_ids = [aws_security_group.ecs-tasks-staging.id, aws_security_group.ecs-ecr-staging.id]
+  subnet_ids         = aws_subnet.private-staging.*.id
+}
+
+resource "aws_vpc_endpoint" "logs" {
+  vpc_id              = aws_vpc.staging.id
+  service_name        = "com.amazonaws.${var.aws_region}.logs"
+  vpc_endpoint_type   = "Interface"
+  security_group_ids  = [aws_security_group.ecs-tasks-staging.id, aws_security_group.ecs-ecr-staging.id]
+  subnet_ids          = aws_subnet.private-staging.*.id
+  private_dns_enabled = true
 }
