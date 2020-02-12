@@ -36,6 +36,11 @@ variable "app_count" {
   default     = 1
 }
 
+variable "nat_vpc_ami" {
+  description = "amzn-ami-vpc-nat-hvm-2018.03.0.20180811-x86_64-ebs AMI"
+  default     = "ami-0422d936d535c63b1"
+}
+
 variable "worker_count" {
   description = "Number of docker containers to run"
   default     = 1

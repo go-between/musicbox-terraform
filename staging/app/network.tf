@@ -42,10 +42,13 @@ resource "aws_eip" "gw-staging" {
   depends_on = [aws_internet_gateway.gw-staging]
 }
 
-resource "aws_nat_gateway" "gw-staging" {
-  count         = var.az_count
-  subnet_id     = element(aws_subnet.public-staging.*.id, count.index)
-  allocation_id = element(aws_eip.gw-staging.*.id, count.index)
+resource "aws_instance" "nat-gateway-staging" {
+  count = var.az_count
+
+  ami               = "${var.nat_vpc_ami}"
+  instance_type     = "t2.micro"
+  availability_zone = data.aws_availability_zones.available.names[count.index]
+  subnet_id         = element(aws_subnet.public-staging.*.id, count.index)
 }
 
 # Create a new route table for the private subnets, make it route non-local traffic through the NAT gateway to the internet
