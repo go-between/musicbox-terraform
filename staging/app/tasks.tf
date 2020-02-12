@@ -39,7 +39,7 @@ resource "aws_ecs_service" "room-poll-staging" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    security_groups  = [aws_security_group.ecs-tasks-staging.id]
+    security_groups  = [aws_security_group.ecs-tasks-staging.id, aws_security_group.ecs-ecr-staging.id]
     subnets          = aws_subnet.private-staging.*.id
     assign_public_ip = true
   }

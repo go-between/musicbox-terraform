@@ -25,9 +25,11 @@ resource "aws_alb_target_group" "staging" {
 # Redirect all traffic from the ALB to the target group
 resource "aws_alb_listener" "front-end-staging" {
   load_balancer_arn = aws_alb.staging.id
-  port              = var.app_port
-  protocol          = "HTTP"
-
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  # Made manually in AWS
+  certificate_arn = "arn:aws:acm:us-east-1:593337084109:certificate/ae733b80-9348-4c20-a4a9-aef871ba1a37"
   default_action {
     target_group_arn = aws_alb_target_group.staging.id
     type             = "forward"
