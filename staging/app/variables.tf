@@ -1,4 +1,6 @@
 variable "db_root_password_staging" {}
+variable "db_username_staging" {}
+variable "mailgun_key" {}
 variable "secret_key_base_staging" {}
 
 variable "aws_region" {
