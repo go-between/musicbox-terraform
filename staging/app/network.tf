@@ -36,20 +36,15 @@ resource "aws_route" "internet-access-staging" {
   gateway_id             = aws_internet_gateway.gw-staging.id
 }
 
-# Create a NAT gateway with an Elastic IP for each private subnet to get internet connectivity
-resource "aws_eip" "gw-staging" {
-  count      = var.az_count
-  vpc        = true
-  depends_on = [aws_internet_gateway.gw-staging]
-}
-
 resource "aws_instance" "nat-gateway-staging" {
   count = var.az_count
 
-  ami               = var.nat_vpc_ami
-  instance_type     = "t2.micro"
-  availability_zone = data.aws_availability_zones.available.names[count.index]
-  subnet_id         = element(aws_subnet.public-staging.*.id, count.index)
+  ami                    = var.nat_vpc_ami
+  instance_type          = "t2.micro"
+  availability_zone      = data.aws_availability_zones.available.names[count.index]
+  subnet_id              = element(aws_subnet.public-staging.*.id, count.index)
+  vpc_security_group_ids = [aws_security_group.nat-gateway-staging.id]
+  source_dest_check      = false
 }
 
 # Create a new route table for the private subnets, make it route non-local traffic through the NAT gateway to the internet

@@ -9,6 +9,7 @@
     "environment": [
       { "name": "ALLOWED_HOSTS", "value": "${allowed_hosts}" },
       { "name": "DATABASE_URL", "value": "${database_url}" },
+      { "name": "MAILGUN_KEY", "value": "${mailgun_key}" },
       { "name": "RAILS_ENV", "value": "staging" },
       { "name": "REDIS_URL", "value": "${redis_url}" },
       { "name": "SECRET_KEY_BASE", "value": "${secret_key_base}" }

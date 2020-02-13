@@ -18,6 +18,34 @@ resource "aws_security_group" "lb-staging" {
   }
 }
 
+# Traffic from ECS cluster may cross the nat gateway
+resource "aws_security_group" "nat-gateway-staging" {
+  name        = "musicbox-nat-gateawy-staging"
+  description = "allow traffic to cross from ecs tasks"
+  vpc_id      = aws_vpc.staging.id
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = 80
+    to_port         = 80
+    security_groups = [aws_security_group.ecs-tasks-staging.id]
+  }
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = 443
+    to_port         = 443
+    security_groups = [aws_security_group.ecs-tasks-staging.id]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 # Traffic to the ECS cluster should only come from the ALB
 resource "aws_security_group" "ecs-tasks-staging" {
   name        = "musicbox-ecs-tasks-security-group-staging"
@@ -58,7 +86,6 @@ resource "aws_security_group" "ecs-ecr-staging" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
 
 # Traffic to the DB should only come from the ECS Task security group
 resource "aws_security_group" "db-staging" {
