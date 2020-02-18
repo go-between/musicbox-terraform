@@ -92,17 +92,23 @@ resource "aws_security_group" "db-staging" {
   name   = "musicbox-db-security-group-staging"
   vpc_id = aws_vpc.staging.id
   ingress {
-    protocol        = "tcp"
-    from_port       = 5432
-    to_port         = 5432
-    security_groups = [aws_security_group.ecs-tasks-staging.id]
+    protocol  = "tcp"
+    from_port = 5432
+    to_port   = 5432
+    security_groups = [
+      aws_security_group.ecs-tasks-staging.id,
+      aws_security_group.session-manager-staging.id
+    ]
   }
 
   egress {
-    protocol        = "tcp"
-    from_port       = 5432
-    to_port         = 5432
-    security_groups = [aws_security_group.ecs-tasks-staging.id]
+    protocol  = "tcp"
+    from_port = 5432
+    to_port   = 5432
+    security_groups = [
+      aws_security_group.ecs-tasks-staging.id,
+      aws_security_group.session-manager-staging.id
+    ]
   }
 }
 
