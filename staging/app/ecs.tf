@@ -12,7 +12,7 @@ data "template_file" "musicbox-app" {
     fargate_memory  = var.fargate_memory
     aws_region      = var.aws_region
     command         = jsonencode(["passenger", "start", "-p", "80"])
-    allowed_hosts   = "^172\\\\.17\\\\.\\\\d{1,3}\\\\.\\\\d{1,3}$&^${aws_alb.staging.dns_name}$&^api-staging.musicbox.fm$"
+    allowed_hosts   = "^172\\\\.17\\\\.\\\\d{1,3}\\\\.\\\\d{1,3}$&^${aws_alb.staging.dns_name}$&^api-staging.musicbox.fm$&^https://musicbox.fm$"
     database_url    = "postgresql://root:${var.db_root_password_staging}@${aws_db_instance.musicbox-staging.address}"
     secret_key_base = var.secret_key_base_staging
     redis_url       = "redis://${aws_elasticache_cluster.musicbox-staging.cache_nodes.0.address}:6379"
