@@ -52,7 +52,6 @@ resource "aws_appautoscaling_target" "room-poll-staging" {
   service_namespace  = "ecs"
   resource_id        = "service/${aws_ecs_cluster.tasks-staging.name}/${aws_ecs_service.room-poll-staging.name}"
   scalable_dimension = "ecs:service:DesiredCount"
-  role_arn           = aws_iam_role.ecs_auto_scale_role.arn
   min_capacity       = 1
   max_capacity       = 1
 

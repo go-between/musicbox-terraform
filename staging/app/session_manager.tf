@@ -9,6 +9,12 @@ resource "aws_instance" "ssm-staging" {
   tags = {
     Name = "SSM-Staging"
   }
+
+  user_data = <<-EOF
+    #! /bin/bash
+    yum install -y ec2-instance-connect
+    yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
+  EOF
 }
 
 # VPC Endpoint
@@ -97,6 +103,10 @@ data "aws_iam_policy_document" "assume_role_policy" {
   }
 }
 
+data "aws_iam_policy" "ssm-staging" {
+  arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+}
+
 resource "aws_iam_policy" "ssm-staging" {
   name   = "ssm-staging"
   policy = data.aws_iam_policy.ssm-staging.policy
@@ -108,6 +118,4 @@ resource "aws_iam_role_policy_attachment" "ssm-staging" {
   policy_arn = aws_iam_policy.ssm-staging.arn
 }
 
-data "aws_iam_policy" "ssm-staging" {
-  arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
-}
+
