@@ -45,6 +45,7 @@ resource "aws_instance" "nat-gateway-staging" {
   subnet_id              = element(aws_subnet.public-staging.*.id, count.index)
   vpc_security_group_ids = [aws_security_group.nat-gateway-staging.id]
   source_dest_check      = false
+  iam_instance_profile   = "AmazonSSMRoleForInstancesQuickSetup"
 }
 
 # Create a new route table for the private subnets, make it route non-local traffic through the NAT gateway to the internet
