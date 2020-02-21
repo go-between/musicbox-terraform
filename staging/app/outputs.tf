@@ -13,3 +13,7 @@ output "aws_security_group-ecs-ecr-staging" {
 output "aws_subnet_private-staging_ids" {
   value = aws_subnet.private-staging.*.id
 }
+
+output "aws_db_instance-staging-address" {
+  value = aws_db_instance.musicbox-staging.address
+}
