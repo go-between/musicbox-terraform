@@ -18,7 +18,7 @@ resource "aws_elasticache_cluster" "musicbox-staging" {
 
 resource "aws_elasticache_cluster" "musicbox-sidekiq-staging" {
   depends_on           = [aws_security_group.redis-staging]
-  cluster_id           = "musicbox-staging"
+  cluster_id           = "musicbox-sidekiq-staging"
   engine               = "redis"
   node_type            = "cache.t2.micro"
   num_cache_nodes      = 1
