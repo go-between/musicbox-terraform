@@ -6,17 +6,19 @@ data "template_file" "musicbox-app" {
   template = file("./templates/ecs/app.json.tpl")
 
   vars = {
-    app_image       = var.app_image
-    app_port        = var.app_port
-    fargate_cpu     = var.fargate_cpu
-    fargate_memory  = var.fargate_memory
-    aws_region      = var.aws_region
-    command         = jsonencode(["passenger", "start", "-p", "80"])
-    allowed_hosts   = "^172\\\\.17\\\\.\\\\d{1,3}\\\\.\\\\d{1,3}$&^${aws_alb.staging.dns_name}$&^api-staging.musicbox.fm$&^https://musicbox.fm$"
-    database_url    = "postgresql://root:${var.db_root_password_staging}@${aws_db_instance.musicbox-staging.address}"
-    mailgun_key     = var.mailgun_key
-    secret_key_base = var.secret_key_base_staging
-    redis_url       = "redis://${aws_elasticache_cluster.musicbox-staging.cache_nodes.0.address}:6379"
+    app_image         = var.app_image
+    app_port          = var.app_port
+    fargate_cpu       = var.fargate_cpu
+    fargate_memory    = var.fargate_memory
+    aws_region        = var.aws_region
+    command           = jsonencode(["passenger", "start", "-p", "80"])
+    allowed_hosts     = "^172\\\\.17\\\\.\\\\d{1,3}\\\\.\\\\d{1,3}$&^${aws_alb.staging.dns_name}$&^api-staging.musicbox.fm$&^https://musicbox.fm$"
+    database_url      = "postgresql://root:${var.db_root_password_staging}@${aws_db_instance.musicbox-staging.address}"
+    log_level         = "error"
+    mailgun_key       = var.mailgun_key
+    secret_key_base   = var.secret_key_base_staging
+    redis_url         = "redis://${aws_elasticache_cluster.musicbox-staging.cache_nodes.0.address}:6379"
+    sidekiq_redis_url = "redis://${aws_elasticache_cluster.musicbox-sidekiq-staging.cache_nodes.0.address}:6379"
   }
 
   depends_on = [aws_db_instance.musicbox-staging, aws_elasticache_cluster.musicbox-staging]
