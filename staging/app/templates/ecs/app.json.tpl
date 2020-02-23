@@ -12,7 +12,8 @@
       { "name": "MAILGUN_KEY", "value": "${mailgun_key}" },
       { "name": "RAILS_ENV", "value": "staging" },
       { "name": "REDIS_URL", "value": "${redis_url}" },
-      { "name": "SECRET_KEY_BASE", "value": "${secret_key_base}" }
+      { "name": "SECRET_KEY_BASE", "value": "${secret_key_base}" },
+      { "name": "SIDEKIQ_REDIS_URL", "value": "${sidekiq_redis_url" }
     ],
     "logConfiguration": {
         "logDriver": "awslogs",
