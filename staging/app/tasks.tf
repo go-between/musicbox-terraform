@@ -14,6 +14,7 @@ data "template_file" "musicbox-app-room-poll" {
     command           = jsonencode(["bin/rake", "room:poll_queue"])
     allowed_hosts     = ""
     database_url      = "postgresql://root:${var.db_root_password_staging}@${aws_db_instance.musicbox-staging.address}"
+    log_level         = "error"
     mailgun_key       = var.mailgun_key
     secret_key_base   = var.secret_key_base_staging
     redis_url         = "redis://${aws_elasticache_cluster.musicbox-staging.cache_nodes.0.address}:6379"
