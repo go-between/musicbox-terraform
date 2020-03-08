@@ -2,6 +2,7 @@ variable "db_root_password_staging" {}
 variable "db_username_staging" {}
 variable "mailgun_key" {}
 variable "secret_key_base_staging" {}
+variable "skylight_auth" {}
 
 variable "aws_region" {
   description = "The AWS region things are created in"

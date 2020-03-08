@@ -14,7 +14,9 @@
       { "name": "RAILS_ENV", "value": "staging" },
       { "name": "REDIS_URL", "value": "${redis_url}" },
       { "name": "SECRET_KEY_BASE", "value": "${secret_key_base}" },
-      { "name": "SIDEKIQ_REDIS_URL", "value": "${sidekiq_redis_url}" }
+      { "name": "SKYLIGHT_AUTHENTICATION", "value": "${skylight_auth}" },
+      { "name": "SKYLIGHT_ENABLED", "value": "${skylight_enabled}" },
+      { "name": "SKYLIGHT_ENABLE_SIDEKIQ", "value": "${skylight_sidekiq_enabled}" }
     ],
     "logConfiguration": {
         "logDriver": "awslogs",
