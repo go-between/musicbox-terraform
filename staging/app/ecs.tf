@@ -11,7 +11,7 @@ data "template_file" "musicbox-app" {
     fargate_cpu              = var.fargate_cpu
     fargate_memory           = "1024"
     aws_region               = var.aws_region
-    command                  = jsonencode(["passenger", "start", "-p", "80"])
+    command                  = jsonencode(["passenger", "start", "-p", "80", "--nginx-config-template", "nginx.conf.erb"])
     allowed_hosts            = "^172\\\\.17\\\\.\\\\d{1,3}\\\\.\\\\d{1,3}$&^${aws_alb.staging.dns_name}$&^api-staging.musicbox.fm$&^https://musicbox.fm$"
     database_url             = "postgresql://root:${var.db_root_password_staging}@${aws_db_instance.musicbox-staging.address}"
     log_level                = "error"
