@@ -1,49 +1,49 @@
 # EC2 Instance
-resource "aws_instance" "ssm-staging" {
-  # amzn2-ami-hvm-2.0.20200207.1-x86_64-gp2
-  ami                    = "ami-0a887e401f7654935"
-  instance_type          = "t2.micro"
-  subnet_id              = aws_subnet.private-staging.0.id
-  iam_instance_profile   = aws_iam_instance_profile.ssm-staging.name
-  vpc_security_group_ids = [aws_security_group.session-manager-staging.id]
-  tags = {
-    Name = "SSM-Staging"
-  }
+# resource "aws_instance" "ssm-staging" {
+#   # amzn2-ami-hvm-2.0.20200207.1-x86_64-gp2
+#   ami                    = "ami-0a887e401f7654935"
+#   instance_type          = "t2.micro"
+#   subnet_id              = aws_subnet.private-staging.0.id
+#   iam_instance_profile   = aws_iam_instance_profile.ssm-staging.name
+#   vpc_security_group_ids = [aws_security_group.session-manager-staging.id]
+#   tags = {
+#     Name = "SSM-Staging"
+#   }
 
-  user_data = <<-EOF
-    #! /bin/bash
-    yum install -y ec2-instance-connect
-    yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
-  EOF
-}
+#   user_data = <<-EOF
+#     #! /bin/bash
+#     yum install -y ec2-instance-connect
+#     yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
+#   EOF
+# }
 
 # VPC Endpoint
-resource "aws_vpc_endpoint" "ssm" {
-  vpc_id              = aws_vpc.staging.id
-  service_name        = "com.amazonaws.${var.aws_region}.ssm"
-  vpc_endpoint_type   = "Interface"
-  security_group_ids  = [aws_security_group.session-manager-vpc-staging.id]
-  subnet_ids          = aws_subnet.private-staging.*.id
-  private_dns_enabled = true
-}
+# resource "aws_vpc_endpoint" "ssm" {
+#   vpc_id              = aws_vpc.staging.id
+#   service_name        = "com.amazonaws.${var.aws_region}.ssm"
+#   vpc_endpoint_type   = "Interface"
+#   security_group_ids  = [aws_security_group.session-manager-vpc-staging.id]
+#   subnet_ids          = aws_subnet.private-staging.*.id
+#   private_dns_enabled = true
+# }
 
-resource "aws_vpc_endpoint" "ec2messages" {
-  vpc_id              = aws_vpc.staging.id
-  service_name        = "com.amazonaws.${var.aws_region}.ec2messages"
-  vpc_endpoint_type   = "Interface"
-  security_group_ids  = [aws_security_group.session-manager-vpc-staging.id]
-  subnet_ids          = aws_subnet.private-staging.*.id
-  private_dns_enabled = true
-}
+# resource "aws_vpc_endpoint" "ec2messages" {
+#   vpc_id              = aws_vpc.staging.id
+#   service_name        = "com.amazonaws.${var.aws_region}.ec2messages"
+#   vpc_endpoint_type   = "Interface"
+#   security_group_ids  = [aws_security_group.session-manager-vpc-staging.id]
+#   subnet_ids          = aws_subnet.private-staging.*.id
+#   private_dns_enabled = true
+# }
 
-resource "aws_vpc_endpoint" "ssmmessages" {
-  vpc_id              = aws_vpc.staging.id
-  service_name        = "com.amazonaws.${var.aws_region}.ssmmessages"
-  vpc_endpoint_type   = "Interface"
-  security_group_ids  = [aws_security_group.session-manager-vpc-staging.id]
-  subnet_ids          = aws_subnet.private-staging.*.id
-  private_dns_enabled = true
-}
+# resource "aws_vpc_endpoint" "ssmmessages" {
+#   vpc_id              = aws_vpc.staging.id
+#   service_name        = "com.amazonaws.${var.aws_region}.ssmmessages"
+#   vpc_endpoint_type   = "Interface"
+#   security_group_ids  = [aws_security_group.session-manager-vpc-staging.id]
+#   subnet_ids          = aws_subnet.private-staging.*.id
+#   private_dns_enabled = true
+# }
 
 # Security
 resource "aws_security_group" "session-manager-staging" {
@@ -118,4 +118,28 @@ resource "aws_iam_role_policy_attachment" "ssm-staging" {
   policy_arn = aws_iam_policy.ssm-staging.arn
 }
 
+# Allow musicbox-truman user to send an SSH key and sign in to SSM
+data "aws_caller_identity" "current" {}
 
+# data "aws_iam_policy_document" "ssm-ssh-management-staging" {
+#   statement {
+#     actions = [
+#       "ec2-instance-connect:SendSSHPublicKey"
+#     ]
+#     resources = [
+#       "arn:aws:ec2:${var.aws_region}:${data.aws_caller_identity.current.account_id}:instance/${aws_instance.ssm-staging.id}"
+#     ]
+#   }
+# }
+
+# resource "aws_iam_policy" "ssm-ssh-management-staging" {
+#   name   = "ssm-ssh-management-staging"
+#   path   = "/"
+#   policy = data.aws_iam_policy_document.ssm-ssh-management-staging.json
+# }
+
+# resource "aws_iam_policy_attachment" "ssm-ssh-management-staging" {
+#   name       = "ssm-ssh-management-staging"
+#   users      = ["musicbox-truman"]
+#   policy_arn = aws_iam_policy.ssm-ssh-management-staging.arn
+# }
