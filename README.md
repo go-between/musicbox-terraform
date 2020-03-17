@@ -4,7 +4,7 @@ Where all of the robots are summoned.
 
 ## Contributing
 
-Thank you for considering to spend some of your life energy in order to make the Musicbox a better thing.  Please see [CONTRIBUTING.md](CONTRIBUTING.MD) for details and guidelines.
+Thank you for considering to spend some of your life energy in order to make the Musicbox a better thing.  Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details and guidelines.
 
 ## License
 
@@ -18,4 +18,4 @@ See [LICENSE.txt](LICENSE.txt) for details.
 
 How much money does it cost to make a thing exist on the internet?
 
-See [COSTS.md](http://github.com/go-between/musicbox-api/COSTS.md) in the musicbox-api repository for details.
+See [COSTS.md](https://github.com/go-between/musicbox-api/blob/master/COSTS.md) in the musicbox-api repository for details.
