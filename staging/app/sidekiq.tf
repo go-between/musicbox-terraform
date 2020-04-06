@@ -20,8 +20,8 @@ data "template_file" "musicbox-sidekiq" {
     redis_url                = "redis://${aws_elasticache_cluster.musicbox-staging.cache_nodes.0.address}:6379"
     sidekiq_redis_url        = "redis://${aws_elasticache_cluster.musicbox-sidekiq-staging.cache_nodes.0.address}:6379"
     skylight_auth            = var.skylight_auth
-    skylight_enabled         = true
-    skylight_sidekiq_enabled = true
+    skylight_enabled         = false
+    skylight_sidekiq_enabled = false
   }
 
   depends_on = [aws_db_instance.musicbox-staging, aws_elasticache_cluster.musicbox-staging]
