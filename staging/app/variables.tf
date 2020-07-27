@@ -3,6 +3,8 @@ variable "db_username_staging" {}
 variable "mailgun_key" {}
 variable "secret_key_base_staging" {}
 variable "skylight_auth" {}
+variable "airbrake_id" {}
+variable "airbrake_secret" {}
 
 variable "aws_region" {
   description = "The AWS region things are created in"
