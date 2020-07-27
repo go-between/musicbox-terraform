@@ -22,6 +22,8 @@ data "template_file" "musicbox-app" {
     skylight_auth            = var.skylight_auth
     skylight_enabled         = false
     skylight_sidekiq_enabled = false
+    airbrake_id              = var.airbrake_id
+    airbrake_secret          = var.airbrake_secret
   }
 
   depends_on = [aws_db_instance.musicbox-staging, aws_elasticache_cluster.musicbox-staging]

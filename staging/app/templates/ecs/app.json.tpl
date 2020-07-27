@@ -16,7 +16,9 @@
       { "name": "SECRET_KEY_BASE", "value": "${secret_key_base}" },
       { "name": "SKYLIGHT_AUTHENTICATION", "value": "${skylight_auth}" },
       { "name": "SKYLIGHT_ENABLED", "value": "${skylight_enabled}" },
-      { "name": "SKYLIGHT_ENABLE_SIDEKIQ", "value": "${skylight_sidekiq_enabled}" }
+      { "name": "SKYLIGHT_ENABLE_SIDEKIQ", "value": "${skylight_sidekiq_enabled}" },
+      { "name": "AIRBRAKE_ID", "value": "${airbrake_id}" },
+      { "name": "AIRBRAKE_SECRET", "value": "${airbrake_secret}" }
     ],
     "logConfiguration": {
         "logDriver": "awslogs",
